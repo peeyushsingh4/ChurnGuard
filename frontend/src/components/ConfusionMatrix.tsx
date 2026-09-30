@@ -21,13 +21,13 @@ export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({ data, modelNam
   const accuracy = (((tp + tn) / total) * 100).toFixed(1);
 
   return (
-    <div className="bg-[#0f172a]/70 border border-slate-800/80 rounded-xl p-6">
+    <div className="bg-white dark:bg-[#0f172a]/70 border border-slate-200 dark:border-slate-800/80 rounded-xl p-6 shadow-xs dark:shadow-none transition-all">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-semibold text-white">Visual Confusion Matrix</h3>
-          <p className="text-xs text-slate-400">Holdout evaluation on 20% test partition (N={total.toLocaleString()})</p>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Visual Confusion Matrix</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Holdout evaluation on 20% test partition (N={total.toLocaleString()})</p>
         </div>
-        <span className="text-xs font-mono px-2.5 py-1 rounded bg-indigo-950/40 text-indigo-400 border border-indigo-800/50">
+        <span className="text-xs font-mono px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50 font-semibold">
           {modelName}
         </span>
       </div>
@@ -36,95 +36,95 @@ export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({ data, modelNam
         {/* 2x2 Heatmap Matrix */}
         <div className="space-y-2">
           {/* Header Row: Predicted */}
-          <div className="grid grid-cols-3 text-center text-xs font-medium text-slate-400">
-            <div className="text-left pl-2 font-mono text-[11px] text-slate-400">Actual \ Predicted</div>
-            <div className="text-indigo-300 font-semibold">Pred: Retained (0)</div>
-            <div className="text-rose-300 font-semibold">Pred: Churned (1)</div>
+          <div className="grid grid-cols-3 text-center text-xs font-medium text-slate-500 dark:text-slate-400">
+            <div className="text-left pl-2 font-mono text-[11px]">Actual \ Predicted</div>
+            <div className="text-indigo-600 dark:text-indigo-300 font-semibold">Pred: Retained (0)</div>
+            <div className="text-rose-600 dark:text-rose-300 font-semibold">Pred: Churned (1)</div>
           </div>
 
           {/* Row 1: Actual Retained */}
           <div className="grid grid-cols-3 gap-2 items-center">
-            <div className="text-xs font-semibold text-indigo-300 pl-2">
+            <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 pl-2">
               Act: Retained (0)
             </div>
             {/* True Negative */}
-            <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-lg p-3 text-center transition-all hover:bg-emerald-950/50 group">
-              <div className="text-[11px] font-semibold text-emerald-400 group-hover:scale-105 transition-transform">
+            <div className="bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/30 rounded-lg p-3 text-center transition-all hover:bg-emerald-100/80 dark:hover:bg-emerald-950/50 group">
+              <div className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 group-hover:scale-105 transition-transform">
                 True Negative (TN)
               </div>
-              <div className="text-xl font-bold font-mono text-white mt-1">{tn.toLocaleString()}</div>
-              <div className="text-[10px] text-emerald-400/80 font-mono mt-0.5">{tnPct}% of test set</div>
+              <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1">{tn.toLocaleString()}</div>
+              <div className="text-[10px] text-emerald-700/80 dark:text-emerald-400/80 font-mono mt-0.5">{tnPct}% of test set</div>
             </div>
             {/* False Positive */}
-            <div className="bg-rose-950/20 border border-rose-500/20 rounded-lg p-3 text-center transition-all hover:bg-rose-950/30 group">
-              <div className="text-[11px] font-semibold text-rose-400/90 group-hover:scale-105 transition-transform">
+            <div className="bg-rose-50/80 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-500/20 rounded-lg p-3 text-center transition-all hover:bg-rose-100/80 dark:hover:bg-rose-950/30 group">
+              <div className="text-[11px] font-semibold text-rose-700 dark:text-rose-400/90 group-hover:scale-105 transition-transform">
                 False Positive (FP)
               </div>
-              <div className="text-xl font-bold font-mono text-white mt-1">{fp.toLocaleString()}</div>
-              <div className="text-[10px] text-rose-400/70 font-mono mt-0.5">{fpPct}% (Type I Error)</div>
+              <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1">{fp.toLocaleString()}</div>
+              <div className="text-[10px] text-rose-700/70 dark:text-rose-400/70 font-mono mt-0.5">{fpPct}% (Type I Error)</div>
             </div>
           </div>
 
           {/* Row 2: Actual Churned */}
           <div className="grid grid-cols-3 gap-2 items-center">
-            <div className="text-xs font-semibold text-rose-300 pl-2">
+            <div className="text-xs font-semibold text-rose-700 dark:text-rose-300 pl-2">
               Act: Churned (1)
             </div>
             {/* False Negative */}
-            <div className="bg-rose-950/30 border border-rose-500/30 rounded-lg p-3 text-center transition-all hover:bg-rose-950/40 group">
-              <div className="text-[11px] font-semibold text-rose-400 group-hover:scale-105 transition-transform">
+            <div className="bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-500/30 rounded-lg p-3 text-center transition-all hover:bg-rose-100/80 dark:hover:bg-rose-950/40 group">
+              <div className="text-[11px] font-semibold text-rose-700 dark:text-rose-400 group-hover:scale-105 transition-transform">
                 False Negative (FN)
               </div>
-              <div className="text-xl font-bold font-mono text-white mt-1">{fn.toLocaleString()}</div>
-              <div className="text-[10px] text-rose-400/70 font-mono mt-0.5">{fnPct}% (Missed Churn)</div>
+              <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1">{fn.toLocaleString()}</div>
+              <div className="text-[10px] text-rose-700/70 dark:text-rose-400/70 font-mono mt-0.5">{fnPct}% (Missed Churn)</div>
             </div>
             {/* True Positive */}
-            <div className="bg-indigo-950/40 border border-indigo-500/40 rounded-lg p-3 text-center transition-all hover:bg-indigo-950/60 group">
-              <div className="text-[11px] font-semibold text-indigo-400 group-hover:scale-105 transition-transform">
+            <div className="bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-500/40 rounded-lg p-3 text-center transition-all hover:bg-indigo-100/80 dark:hover:bg-indigo-950/60 group">
+              <div className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-400 group-hover:scale-105 transition-transform">
                 True Positive (TP)
               </div>
-              <div className="text-xl font-bold font-mono text-white mt-1">{tp.toLocaleString()}</div>
-              <div className="text-[10px] text-indigo-400/80 font-mono mt-0.5">{tpPct}% of test set</div>
+              <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1">{tp.toLocaleString()}</div>
+              <div className="text-[10px] text-indigo-700/80 dark:text-indigo-400/80 font-mono mt-0.5">{tpPct}% of test set</div>
             </div>
           </div>
         </div>
 
         {/* Derived Rates Summary */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-lg p-4 space-y-3">
-          <div className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+        <div className="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-lg p-4 space-y-3">
+          <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
             Module 2.3 Diagnostic Ratios
           </div>
 
-          <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-800">
+          <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-200 dark:border-slate-800">
             <div>
-              <span className="font-semibold text-slate-200">Sensitivity / Recall (TP Rate)</span>
-              <p className="text-[11px] text-slate-400">TP / (TP + FN) — Fraction of actual churners caught</p>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">Sensitivity / Recall (TP Rate)</span>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">TP / (TP + FN) — Fraction of actual churners caught</p>
             </div>
-            <span className="font-mono font-bold text-sm text-indigo-400">{sensitivity}%</span>
+            <span className="font-mono font-bold text-sm text-indigo-600 dark:text-indigo-400">{sensitivity}%</span>
           </div>
 
-          <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-800">
+          <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-200 dark:border-slate-800">
             <div>
-              <span className="font-semibold text-slate-200">Specificity (TN Rate)</span>
-              <p className="text-[11px] text-slate-400">TN / (TN + FP) — Fraction of loyal subscribers retained</p>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">Specificity (TN Rate)</span>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">TN / (TN + FP) — Fraction of loyal subscribers retained</p>
             </div>
-            <span className="font-mono font-bold text-sm text-emerald-400">{specificity}%</span>
+            <span className="font-mono font-bold text-sm text-emerald-600 dark:text-emerald-400">{specificity}%</span>
           </div>
 
-          <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-800">
+          <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-200 dark:border-slate-800">
             <div>
-              <span className="font-semibold text-slate-200">Precision (PPV)</span>
-              <p className="text-[11px] text-slate-400">TP / (TP + FP) — Reliability of churn alerts</p>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">Precision (PPV)</span>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">TP / (TP + FP) — Reliability of churn alerts</p>
             </div>
-            <span className="font-mono font-bold text-sm text-amber-400">{precision}%</span>
+            <span className="font-mono font-bold text-sm text-amber-600 dark:text-amber-400">{precision}%</span>
           </div>
 
           <div className="flex items-center justify-between text-xs">
             <div>
-              <span className="font-semibold text-slate-200">Overall Accuracy</span>
-              <p className="text-[11px] text-slate-400">(TP + TN) / Total — Global concordant classification</p>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">Overall Accuracy</span>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">(TP + TN) / Total — Global concordant classification</p>
             </div>
-            <span className="font-mono font-bold text-sm text-white">{accuracy}%</span>
+            <span className="font-mono font-bold text-sm text-slate-900 dark:text-white">{accuracy}%</span>
           </div>
         </div>
       </div>

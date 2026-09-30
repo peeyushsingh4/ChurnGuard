@@ -1,14 +1,23 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
-  * {
-    border-color: #1e293b;
-  }
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  html.dark body {
     background-color: #090d16;
     color: #f1f5f9;
   }
+  
+  html:not(.dark) body {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
@@ -19,15 +28,25 @@
   width: 6px;
   height: 6px;
 }
-::-webkit-scrollbar-track {
+.dark ::-webkit-scrollbar-track {
   background: #090d16;
 }
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.dark ::-webkit-scrollbar-thumb {
   background: #1e293b;
   border-radius: 9999px;
 }
-::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
   background: #334155;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Smooth subtle transitions */
@@ -35,6 +54,5 @@
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .transition-card:hover {
-  border-color: #334155;
   transform: translateY(-1px);
 }

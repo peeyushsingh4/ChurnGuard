@@ -21,8 +21,10 @@ import {
 import { api } from '../services/api';
 import { InsightsResponse } from '../types';
 import { DashboardSkeleton } from '../components/SkeletonLoader';
+import { useTheme } from '../context/ThemeContext';
 
 export const FeatureInsights: React.FC = () => {
+  const { theme } = useTheme();
   const [data, setData] = useState<InsightsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -44,6 +46,8 @@ export const FeatureInsights: React.FC = () => {
     return <DashboardSkeleton />;
   }
 
+  const isDark = theme === 'dark';
+
   // Format feature importances for horizontal bar chart
   const importanceChartData = (data.feature_importances || [])
     .slice(0, 10)
@@ -58,46 +62,46 @@ export const FeatureInsights: React.FC = () => {
     .reverse();
 
   const impactBadgeStyles: Record<string, string> = {
-    Critical: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    High: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    Medium: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-    Low: 'bg-slate-800 text-slate-300 border-slate-700',
+    Critical: 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-500/20',
+    High: 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20',
+    Medium: 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20',
+    Low: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700',
   };
 
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="p-6 rounded-xl bg-gradient-to-r from-indigo-950/40 via-slate-900 to-[#0f172a] border border-indigo-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-xl bg-gradient-to-r from-indigo-50 via-white to-slate-50 dark:from-indigo-950/40 dark:via-slate-900 dark:to-[#0f172a] border border-indigo-200 dark:border-indigo-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs dark:shadow-none transition-all">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <span className="p-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
               <Lightbulb className="w-4 h-4" />
             </span>
-            <h2 className="text-base font-bold text-white tracking-tight">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
               Predictive Feature Rankings & Business Insights
             </h2>
           </div>
-          <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
             Derived directly from tree-based Gini gain & gradient split importances ({data.model_source}).
             Translating mathematical ensemble features into concrete retention operations.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-right">
-            <span className="text-[10px] text-slate-400 block font-mono">Algorithm Source</span>
-            <span className="text-xs font-semibold text-emerald-400 font-mono">{data.model_source}</span>
+          <div className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-right shadow-2xs">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">Algorithm Source</span>
+            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono">{data.model_source}</span>
           </div>
         </div>
       </div>
 
       {/* Feature Importance Horizontal Bar Chart */}
-      <div className="bg-[#0f172a]/70 border border-slate-800/80 rounded-xl p-6">
+      <div className="bg-white dark:bg-[#0f172a]/70 border border-slate-200 dark:border-slate-800/80 rounded-xl p-6 shadow-xs dark:shadow-none transition-all">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-white">Global Feature Importance Ranking</h3>
-            <p className="text-xs text-slate-400">Relative contribution to ensemble tree split purity</p>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Global Feature Importance Ranking</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Relative contribution to ensemble tree split purity</p>
           </div>
-          <span className="text-xs font-mono text-slate-400">Split Gain (%)</span>
+          <span className="text-xs font-mono text-slate-500 dark:text-slate-400">Split Gain (%)</span>
         </div>
 
         <div className="h-80 w-full my-2">
@@ -107,22 +111,24 @@ export const FeatureInsights: React.FC = () => {
               layout="vertical"
               margin={{ top: 10, right: 30, left: 100, bottom: 10 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis type="number" stroke="#64748b" fontSize={11} domain={[0, 'dataMax + 5']} />
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1e293b' : '#f1f5f9'} />
+              <XAxis type="number" stroke={isDark ? '#64748b' : '#94a3b8'} fontSize={11} domain={[0, 'dataMax + 5']} />
               <YAxis
                 dataKey="feature"
                 type="category"
-                stroke="#94a3b8"
+                stroke={isDark ? '#94a3b8' : '#475569'}
                 fontSize={11}
-                tick={{ fill: '#cbd5e1' }}
+                tick={{ fill: isDark ? '#cbd5e1' : '#475569' }}
                 width={140}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#0f172a',
-                  borderColor: '#334155',
+                  backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                  borderColor: isDark ? '#334155' : '#e2e8f0',
+                  color: isDark ? '#ffffff' : '#0f172a',
                   borderRadius: '8px',
                   fontSize: '12px',
+                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                 }}
               />
               <Bar dataKey="importance" name="Relative Gain (%)" fill="#6366f1" radius={[0, 4, 4, 0]}>
@@ -137,9 +143,9 @@ export const FeatureInsights: React.FC = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
           <span>Top Predictors: Contract Type, Tenure, and Internet Service tier.</span>
-          <span className="font-mono text-indigo-400">Mean Decrease Impurity (MDI)</span>
+          <span className="font-mono text-indigo-600 dark:text-indigo-400 font-medium">Mean Decrease Impurity (MDI)</span>
         </div>
       </div>
 
@@ -148,7 +154,7 @@ export const FeatureInsights: React.FC = () => {
         {data.narrative_insights.map((insight) => (
           <div
             key={insight.id}
-            className="bg-[#0f172a]/70 border border-slate-800/80 rounded-xl p-6 flex flex-col justify-between hover:border-slate-700 transition-all group"
+            className="bg-white dark:bg-[#0f172a]/70 border border-slate-200 dark:border-slate-800/80 rounded-xl p-6 flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 shadow-xs dark:shadow-none transition-all group"
           >
             <div>
               <div className="flex items-center justify-between mb-3">
@@ -156,22 +162,22 @@ export const FeatureInsights: React.FC = () => {
                   {insight.impact_level} Priority
                 </span>
                 <div className="text-right">
-                  <div className="text-lg font-bold font-mono text-white">{insight.metric}</div>
-                  <div className="text-[10px] text-slate-400">{insight.metric_label}</div>
+                  <div className="text-lg font-bold font-mono text-slate-900 dark:text-white">{insight.metric}</div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400">{insight.metric_label}</div>
                 </div>
               </div>
 
-              <h4 className="text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
                 {insight.title}
               </h4>
-              <p className="text-xs text-slate-300 mt-2 leading-relaxed">{insight.summary}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">{insight.summary}</p>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-slate-800/80 bg-slate-900/50 -mx-6 -mb-6 p-4 rounded-b-xl">
-              <div className="text-[10px] uppercase font-semibold text-indigo-400 tracking-wider mb-1 flex items-center gap-1">
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-slate-900/50 -mx-6 -mb-6 p-4 rounded-b-xl">
+              <div className="text-[10px] uppercase font-semibold text-indigo-600 dark:text-indigo-400 tracking-wider mb-1 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" /> Recommended Business Intervention
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed font-medium">{insight.action}</p>
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">{insight.action}</p>
             </div>
           </div>
         ))}

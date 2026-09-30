@@ -27,8 +27,10 @@ import { api } from '../services/api';
 import { DatasetSummary, ModelComparisonItem, PredictionHistoryItem, Recommendation } from '../types';
 import { StatCard } from '../components/StatCard';
 import { DashboardSkeleton } from '../components/SkeletonLoader';
+import { useTheme } from '../context/ThemeContext';
 
 export const DashboardOverview: React.FC = () => {
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dataset, setDataset] = useState<DatasetSummary | null>(null);
@@ -68,17 +70,17 @@ export const DashboardOverview: React.FC = () => {
 
   if (error || !dataset) {
     return (
-      <div className="p-8 rounded-xl bg-slate-900/80 border border-slate-800 text-center space-y-4 max-w-lg mx-auto my-12">
-        <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+      <div className="p-8 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-center space-y-4 max-w-lg mx-auto my-12 shadow-xs dark:shadow-none">
+        <div className="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto">
           <TrendingDown className="w-6 h-6" />
         </div>
-        <h3 className="text-sm font-semibold text-white">Platform Overview Unavailable</h3>
-        <p className="text-xs text-slate-400 leading-relaxed">
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Platform Overview Unavailable</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
           {error || 'Could not connect to backend service.'} Please ensure the backend is running on port 8000.
         </p>
         <button
           onClick={fetchData}
-          className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-xs transition-all"
+          className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
         >
           Retry Connection
         </button>
@@ -105,6 +107,8 @@ export const DashboardOverview: React.FC = () => {
     { cohort: '49-60m', retained: 652, churned: 120 },
     { cohort: '61-72m', retained: 1406, churned: 93 },
   ];
+
+  const isDark = theme === 'dark';
 
   return (
     <div className="space-y-6">
@@ -147,13 +151,13 @@ export const DashboardOverview: React.FC = () => {
       {/* Main Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Churn Ratio Donut */}
-        <div className="bg-[#0f172a]/70 border border-slate-800/80 rounded-xl p-6 flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#0f172a]/70 border border-slate-200 dark:border-slate-800/80 rounded-xl p-6 flex flex-col justify-between shadow-xs dark:shadow-none transition-all">
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-white">Class Balance Breakdown</h2>
-              <span className="text-[11px] text-slate-400 font-mono">Raw Dataset</span>
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Class Balance Breakdown</h2>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">Raw Dataset</span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Natural class distribution highlights the imperative for SMOTE resampling.
             </p>
           </div>
@@ -171,49 +175,56 @@ export const DashboardOverview: React.FC = () => {
                   dataKey="value"
                 >
                   {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} stroke="#0b0f19" strokeWidth={2} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.color}
+                      stroke={isDark ? '#0b0f19' : '#ffffff'}
+                      strokeWidth={2}
+                    />
                   ))}
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                    borderColor: isDark ? '#334155' : '#e2e8f0',
+                    color: isDark ? '#ffffff' : '#0f172a',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
                 />
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-2xl font-bold font-mono text-white">{churnRate}%</span>
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Churn Rate</span>
+              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-white">{churnRate}%</span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Churn Rate</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-800 text-xs">
+          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-              <span className="text-slate-300">Retained: {retainedCount.toLocaleString()}</span>
+              <span className="text-slate-600 dark:text-slate-300">Retained: {retainedCount.toLocaleString()}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-              <span className="text-slate-300">Churned: {churnCount.toLocaleString()}</span>
+              <span className="text-slate-600 dark:text-slate-300">Churned: {churnCount.toLocaleString()}</span>
             </div>
           </div>
         </div>
 
         {/* Churn by Tenure Cohort */}
-        <div className="lg:col-span-2 bg-[#0f172a]/70 border border-slate-800/80 rounded-xl p-6 flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-white dark:bg-[#0f172a]/70 border border-slate-200 dark:border-slate-800/80 rounded-xl p-6 flex flex-col justify-between shadow-xs dark:shadow-none transition-all">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-semibold text-white">Churn Hazard vs Tenure Cohort</h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Churn Hazard vs Tenure Cohort</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 First-year subscribers (0-12m) experience 48% churn, plunging to under 7% after year 5.
               </p>
             </div>
             <NavLink
               to="/insights"
-              className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-medium transition-colors"
+              className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 font-medium transition-colors"
             >
               Deep Dive <ArrowRight className="w-3.5 h-3.5" />
             </NavLink>
@@ -222,15 +233,17 @@ export const DashboardOverview: React.FC = () => {
           <div className="h-60 w-full my-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={tenureCohorts} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="cohort" stroke="#64748b" fontSize={11} />
-                <YAxis stroke="#64748b" fontSize={11} />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1e293b' : '#f1f5f9'} />
+                <XAxis dataKey="cohort" stroke={isDark ? '#64748b' : '#94a3b8'} fontSize={11} />
+                <YAxis stroke={isDark ? '#64748b' : '#94a3b8'} fontSize={11} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                    borderColor: isDark ? '#334155' : '#e2e8f0',
+                    color: isDark ? '#ffffff' : '#0f172a',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
                 />
                 <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} />
@@ -240,9 +253,9 @@ export const DashboardOverview: React.FC = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-slate-800">
+          <div className="pt-2 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
             <span>Critical Retention Window: First 90-180 Days</span>
-            <span className="font-mono text-indigo-400">High Lifetime Value Protection</span>
+            <span className="font-mono text-indigo-600 dark:text-indigo-400 font-medium">High Lifetime Value Protection</span>
           </div>
         </div>
       </div>
@@ -250,47 +263,47 @@ export const DashboardOverview: React.FC = () => {
       {/* Champion Model & Live Feed Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recommendation / Champion Box */}
-        <div className="bg-[#0f172a]/70 border border-slate-800/80 rounded-xl p-6 flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#0f172a]/70 border border-slate-200 dark:border-slate-800/80 rounded-xl p-6 flex flex-col justify-between shadow-xs dark:shadow-none transition-all">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+              <div className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400">
                 <ShieldCheck className="w-4 h-4" />
               </div>
-              <h2 className="text-sm font-semibold text-white">Champion Architecture</h2>
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Champion Architecture</h2>
             </div>
-            <div className="p-3.5 rounded-lg bg-indigo-950/20 border border-indigo-500/20 mb-4">
-              <div className="text-base font-bold text-white font-mono">
+            <div className="p-3.5 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-500/20 mb-4">
+              <div className="text-base font-bold text-slate-900 dark:text-white font-mono">
                 {recommendation?.champion_model || 'XGBoost Classifier'}
               </div>
-              <div className="text-xs text-indigo-300/90 mt-0.5">
+              <div className="text-xs text-indigo-700 dark:text-indigo-300/90 mt-0.5">
                 Family: {recommendation?.champion_family || 'Boosting'}
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-mono">
                 <div>
-                  <span className="text-slate-400 text-[10px] block">ROC-AUC</span>
-                  <span className="text-emerald-400 font-bold text-sm">
+                  <span className="text-slate-500 dark:text-slate-400 text-[10px] block">ROC-AUC</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold text-sm">
                     {recommendation?.champion_auc.toFixed(4) || '0.8492'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] block">F1-SCORE</span>
-                  <span className="text-indigo-400 font-bold text-sm">
+                  <span className="text-slate-500 dark:text-slate-400 text-[10px] block">F1-SCORE</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-bold text-sm">
                     {recommendation?.champion_f1.toFixed(4) || '0.6385'}
                   </span>
                 </div>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed line-clamp-4">
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-4">
               {recommendation?.rationale ||
                 'Second-order gradient boosting minimizes variance and handles correlated categorical subscriber variables with precision.'}
             </p>
           </div>
 
-          <div className="pt-4 mt-4 border-t border-slate-800 flex items-center justify-between">
+          <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <NavLink
               to="/evaluation"
-              className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
+              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
             >
               Inspect Evaluation Matrix <ArrowRight className="w-3.5 h-3.5" />
             </NavLink>
@@ -298,11 +311,11 @@ export const DashboardOverview: React.FC = () => {
         </div>
 
         {/* Live Prediction Activity Feed */}
-        <div className="lg:col-span-2 bg-[#0f172a]/70 border border-slate-800/80 rounded-xl p-6">
+        <div className="lg:col-span-2 bg-white dark:bg-[#0f172a]/70 border border-slate-200 dark:border-slate-800/80 rounded-xl p-6 shadow-xs dark:shadow-none transition-all">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-white">Recent Customer Scoring Activity</h2>
-              <p className="text-xs text-slate-400">Live feed of processed subscriber profiles and risk tags</p>
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Recent Customer Scoring Activity</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Live feed of processed subscriber profiles and risk tags</p>
             </div>
             <NavLink
               to="/predict"
@@ -315,7 +328,7 @@ export const DashboardOverview: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-800 text-slate-400 font-medium">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-medium">
                   <th className="pb-3 pl-2">Customer ID</th>
                   <th className="pb-3">Contract</th>
                   <th className="pb-3">Tenure</th>
@@ -324,7 +337,7 @@ export const DashboardOverview: React.FC = () => {
                   <th className="pb-3">Risk Tier</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono">
                 {history.length > 0 ? (
                   history.map((item) => {
                     const probPct = Math.round(item.churn_probability * 100);
@@ -332,15 +345,19 @@ export const DashboardOverview: React.FC = () => {
                     const isMed = item.risk_tier === 'MEDIUM';
 
                     return (
-                      <tr key={item.id} className="hover:bg-slate-800/30 transition-colors">
-                        <td className="py-3 pl-2 text-white font-medium">{item.customer_id}</td>
-                        <td className="py-3 text-slate-300 font-sans">{item.contract}</td>
-                        <td className="py-3 text-slate-300">{item.tenure} mo</td>
-                        <td className="py-3 text-slate-300">${item.monthly_charges.toFixed(2)}</td>
+                      <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                        <td className="py-3 pl-2 text-slate-900 dark:text-white font-medium">{item.customer_id}</td>
+                        <td className="py-3 text-slate-600 dark:text-slate-300 font-sans">{item.contract}</td>
+                        <td className="py-3 text-slate-600 dark:text-slate-300">{item.tenure} mo</td>
+                        <td className="py-3 text-slate-600 dark:text-slate-300">${item.monthly_charges.toFixed(2)}</td>
                         <td className="py-3">
                           <span
                             className={`font-semibold ${
-                              isHigh ? 'text-rose-400' : isMed ? 'text-amber-400' : 'text-emerald-400'
+                              isHigh
+                                ? 'text-rose-600 dark:text-rose-400'
+                                : isMed
+                                ? 'text-amber-600 dark:text-amber-400'
+                                : 'text-emerald-600 dark:text-emerald-400'
                             }`}
                           >
                             {probPct}%
@@ -350,10 +367,10 @@ export const DashboardOverview: React.FC = () => {
                           <span
                             className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
                               isHigh
-                                ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                                ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-500/20'
                                 : isMed
-                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                                : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20'
+                                : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20'
                             }`}
                           >
                             {item.risk_tier}
@@ -364,7 +381,7 @@ export const DashboardOverview: React.FC = () => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-6 text-center text-slate-400 font-sans">
+                    <td colSpan={6} className="py-6 text-center text-slate-500 dark:text-slate-400 font-sans">
                       No prediction logs found. Score a customer in the Profiler!
                     </td>
                   </tr>
